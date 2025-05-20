@@ -1,5 +1,5 @@
 import type { Router, RouteLocationNormalized } from 'vue-router'
-import { useLoadDeps } from 'use-load-deps'
+import { useLoadDeps } from '@achuan9/use-load-deps'
 
 
 

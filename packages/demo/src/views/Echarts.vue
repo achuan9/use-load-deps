@@ -9,7 +9,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useLoadDeps } from 'use-load-deps'
+import { useLoadDeps } from '@achuan9/use-load-deps'
 
 const chartRef = ref<HTMLElement>()
 const { depsStatus, loadDeps } = useLoadDeps({

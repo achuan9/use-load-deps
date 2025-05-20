@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { useLoadDeps } from 'use-load-deps'
+import { useLoadDeps } from '@achuan9/use-load-deps'
 
 const { depsStatus, loadDeps } = useLoadDeps()
 

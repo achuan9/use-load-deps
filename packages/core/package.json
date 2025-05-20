@@ -1,27 +1,47 @@
 {
-  "name": "use-load-deps",
+  "name": "@achuan9/use-load-deps",
   "version": "1.0.0",
   "description": "A Vue 3 composable for loading external dependencies",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "README.zh-CN.md"
   ],
   "scripts": {
     "dev": "vite build --watch",
     "build": "vite build",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "vue",
     "vue3",
     "composable",
     "dependencies",
-    "lazy-loading"
+    "lazy-loading",
+    "external-dependencies",
+    "dynamic-import"
   ],
-  "author": "",
+  "author": "achuan9",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/achuan9/use-load-deps"
+  },
+  "bugs": {
+    "url": "https://github.com/achuan9/use-load-deps/issues"
+  },
+  "homepage": "https://github.com/achuan9/use-load-deps#readme",
   "peerDependencies": {
     "vue": "^3.0.0"
   },
@@ -31,5 +51,11 @@
     "vite": "^5.1.4",
     "vite-plugin-dts": "^4.5.4",
     "vue": "^3.4.21"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

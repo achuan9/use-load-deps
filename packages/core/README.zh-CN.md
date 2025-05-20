@@ -15,13 +15,13 @@
 
 ```bash
 # 使用 pnpm
-pnpm add use-load-deps
+pnpm add @achuan9/use-load-deps
 
 # 使用 npm
-npm install use-load-deps
+npm install @achuan9/use-load-deps
 
 # 使用 yarn
-yarn add use-load-deps
+yarn add @achuan9/use-load-deps
 ```
 
 ## 使用方法

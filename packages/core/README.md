@@ -15,13 +15,13 @@ A Vue 3 composable for managing external dependencies (like JS and CSS files) lo
 
 ```bash
 # Using pnpm
-pnpm add use-load-deps
+pnpm add @achuan9/use-load-deps
 
 # Using npm
-npm install use-load-deps
+npm install @achuan9/use-load-deps
 
 # Using yarn
-yarn add use-load-deps
+yarn add @achuan9/use-load-deps
 ```
 
 ## Usage

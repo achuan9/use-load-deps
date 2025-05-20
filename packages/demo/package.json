@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "use-load-deps": "workspace:*",
+    "@achuan9/use-load-deps": "workspace:*",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },

@@ -1,8 +1,8 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
-import { setDepsConfig } from 'use-load-deps'
-import type { ExternalDependencies } from 'use-load-deps'
+import { setDepsConfig } from '@achuan9/use-load-deps'
+import type { ExternalDependencies } from '@achuan9/use-load-deps'
 import { setupDepsGuard } from './router/guard'
 
 export const depsConfig: ExternalDependencies = {
