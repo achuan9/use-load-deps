@@ -26,12 +26,12 @@ yarn add @achuan9/use-load-deps
 
 ## Usage
 
-### 1. Configure Dependencies
+### 1. Basic Usage
 
 First, configure the dependencies you want to load in your application entry:
 
 ```typescript
-import { setDepsConfig } from 'use-load-deps'
+import { setDepsConfig } from '@achuan9/use-load-deps'
 
 setDepsConfig({
   // Configure dependencies
@@ -46,7 +46,7 @@ setDepsConfig({
 })
 ```
 
-### 2. Use in Components
+Then use in your components:
 
 ```vue
 <template>
@@ -61,12 +61,132 @@ setDepsConfig({
 </template>
 
 <script setup lang="ts">
-import { useLoadDeps } from 'use-load-deps'
+import { useLoadDeps } from '@achuan9/use-load-deps'
 
 const { depsStatus, loadDeps, loadDepsOnIdle } = useLoadDeps({
   onLoading: (dep) => console.log(`Loading ${dep}...`),
   onLoaded: (dep) => console.log(`${dep} loaded!`),
   onError: (dep, error) => console.error(`Failed to load ${dep}:`, error)
+})
+</script>
+```
+
+### 2. Router Guard Usage
+
+```typescript
+// main.ts
+import { createApp } from 'vue'
+import { createRouter } from 'vue-router'
+import { setDepsConfig } from '@achuan9/use-load-deps'
+import type { ExternalDependencies } from '@achuan9/use-load-deps'
+import { setupDepsGuard } from './router/guard'
+
+// 1. First configure dependencies
+export const depsConfig: ExternalDependencies = {
+  echarts: {
+    js: ['https://cdn.bootcdn.net/ajax/libs/echarts/5.6.0/echarts.min.js'],
+    css: [],
+    sequential: true
+  },
+  flv: {
+    js: ['https://cdn.bootcdn.net/ajax/libs/flv.js/1.6.2/flv.min.js'],
+    css: []
+  }
+}
+
+// 2. Set global dependency configuration (must be before setupDepsGuard)
+setDepsConfig(depsConfig)
+
+// 3. Create router
+const router = createRouter({
+  routes: [
+    {
+      path: '/echarts',
+      component: () => import('./views/Echarts.vue'),
+      meta: {
+        deps: ['echarts'] // Specify dependencies required by the route
+      }
+    },
+    {
+      path: '/flv',
+      component: () => import('./views/Flv.vue'),
+      meta: {
+        deps: ['flv']
+      }
+    }
+  ]
+})
+
+// 4. Setup router guard
+setupDepsGuard(router)
+
+// 5. Create app
+const app = createApp(App)
+app.use(router)
+app.mount('#app')
+
+// router/guard.ts
+import { useLoadDeps } from '@achuan9/use-load-deps'
+import type { Router, RouteLocationNormalized } from 'vue-router'
+
+export function setupDepsGuard(router: Router) {
+  const { getUnloadDeps, loadDeps, loadDepsOnIdle } = useLoadDeps({
+    onLoading: (dep) => console.log(`Loading ${dep}...`),
+    onLoaded: (dep) => console.log(`${dep} loaded!`),
+    onError: (dep, error) => console.error(`Failed to load ${dep}:`, error)
+  })
+
+  // Load dependencies before route enters
+  router.beforeEach(async (to: RouteLocationNormalized) => {
+    const targetDeps = to.meta.deps as string[] || []
+    console.log('Dependencies required by target route, must be loaded before entering', targetDeps)
+
+    if (targetDeps.length > 0) {
+      try {
+        await loadDeps(targetDeps)
+      } catch (error) {
+        console.error('Failed to load dependencies:', error)
+      }
+    }
+    return true
+  })
+
+  // Load other dependencies during idle time after route enters
+  router.afterEach(() => {
+    const unloadDeps = getUnloadDeps()
+    console.log('Unloaded dependencies, load during idle time', unloadDeps)
+    if (unloadDeps.length > 0) {
+      loadDepsOnIdle(unloadDeps)
+    }
+  })
+}
+
+// views/Echarts.vue
+<template>
+  <div class="echarts-demo">
+    <h2>Echarts Example -- Enter page only after loading is complete</h2>
+    <div v-if="depsStatus.echarts === 'loading'">Loading...</div>
+    <div v-else-if="depsStatus.echarts === 'unload'">Not loaded</div>
+    <div v-else>Loaded</div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { useLoadDeps } from '@achuan9/use-load-deps'
+
+const chartRef = ref<HTMLElement>()
+const { depsStatus } = useLoadDeps({
+  onLoading: (dep) => console.log(`echarts: Loading ${dep}...`),
+  onLoaded: (dep) => console.log(`echarts: ${dep} loaded!`),
+  onError: (dep, error) => console.error(`echarts: Failed to load ${dep}:`, error)
+})
+
+onMounted(() => {
+  if (chartRef.value) {
+    echarts.init(chartRef.value)
+    // Create chart
+  }
 })
 </script>
 ```
